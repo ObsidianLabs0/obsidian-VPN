@@ -10,14 +10,26 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ToolsUrlScannerRouteImport } from './routes/tools/url-scanner'
+import { Route as ToolsPasswordStrengthRouteImport } from './routes/tools/password-strength'
+import { Route as ToolsPasswordGeneratorRouteImport } from './routes/tools/password-generator'
+import { Route as ToolsIpLookupRouteImport } from './routes/tools/ip-lookup'
+import { Route as ToolsFingerprintRouteImport } from './routes/tools/fingerprint'
+import { Route as ToolsBreachCheckerRouteImport } from './routes/tools/breach-checker'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -40,20 +52,64 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ToolsUrlScannerRoute = ToolsUrlScannerRouteImport.update({
+  id: '/tools/url-scanner',
+  path: '/tools/url-scanner',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsPasswordStrengthRoute = ToolsPasswordStrengthRouteImport.update({
+  id: '/tools/password-strength',
+  path: '/tools/password-strength',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsPasswordGeneratorRoute = ToolsPasswordGeneratorRouteImport.update({
+  id: '/tools/password-generator',
+  path: '/tools/password-generator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsIpLookupRoute = ToolsIpLookupRouteImport.update({
+  id: '/tools/ip-lookup',
+  path: '/tools/ip-lookup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsFingerprintRoute = ToolsFingerprintRouteImport.update({
+  id: '/tools/fingerprint',
+  path: '/tools/fingerprint',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsBreachCheckerRoute = ToolsBreachCheckerRouteImport.update({
+  id: '/tools/breach-checker',
+  path: '/tools/breach-checker',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
+  '/tools/breach-checker': typeof ToolsBreachCheckerRoute
+  '/tools/fingerprint': typeof ToolsFingerprintRoute
+  '/tools/ip-lookup': typeof ToolsIpLookupRoute
+  '/tools/password-generator': typeof ToolsPasswordGeneratorRoute
+  '/tools/password-strength': typeof ToolsPasswordStrengthRoute
+  '/tools/url-scanner': typeof ToolsUrlScannerRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
+  '/tools/breach-checker': typeof ToolsBreachCheckerRoute
+  '/tools/fingerprint': typeof ToolsFingerprintRoute
+  '/tools/ip-lookup': typeof ToolsIpLookupRoute
+  '/tools/password-generator': typeof ToolsPasswordGeneratorRoute
+  '/tools/password-strength': typeof ToolsPasswordStrengthRoute
+  '/tools/url-scanner': typeof ToolsUrlScannerRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -61,20 +117,58 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
+  '/tools/breach-checker': typeof ToolsBreachCheckerRoute
+  '/tools/fingerprint': typeof ToolsFingerprintRoute
+  '/tools/ip-lookup': typeof ToolsIpLookupRoute
+  '/tools/password-generator': typeof ToolsPasswordGeneratorRoute
+  '/tools/password-strength': typeof ToolsPasswordStrengthRoute
+  '/tools/url-scanner': typeof ToolsUrlScannerRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/forgot-password' | '/login' | '/signup'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/forgot-password'
+    | '/login'
+    | '/reset-password'
+    | '/signup'
+    | '/tools/breach-checker'
+    | '/tools/fingerprint'
+    | '/tools/ip-lookup'
+    | '/tools/password-generator'
+    | '/tools/password-strength'
+    | '/tools/url-scanner'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/forgot-password' | '/login' | '/signup'
+  to:
+    | '/'
+    | '/dashboard'
+    | '/forgot-password'
+    | '/login'
+    | '/reset-password'
+    | '/signup'
+    | '/tools/breach-checker'
+    | '/tools/fingerprint'
+    | '/tools/ip-lookup'
+    | '/tools/password-generator'
+    | '/tools/password-strength'
+    | '/tools/url-scanner'
   id:
     | '__root__'
     | '/'
     | '/dashboard'
     | '/forgot-password'
     | '/login'
+    | '/reset-password'
     | '/signup'
+    | '/tools/breach-checker'
+    | '/tools/fingerprint'
+    | '/tools/ip-lookup'
+    | '/tools/password-generator'
+    | '/tools/password-strength'
+    | '/tools/url-scanner'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -82,7 +176,14 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   SignupRoute: typeof SignupRoute
+  ToolsBreachCheckerRoute: typeof ToolsBreachCheckerRoute
+  ToolsFingerprintRoute: typeof ToolsFingerprintRoute
+  ToolsIpLookupRoute: typeof ToolsIpLookupRoute
+  ToolsPasswordGeneratorRoute: typeof ToolsPasswordGeneratorRoute
+  ToolsPasswordStrengthRoute: typeof ToolsPasswordStrengthRoute
+  ToolsUrlScannerRoute: typeof ToolsUrlScannerRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -92,6 +193,13 @@ declare module '@tanstack/react-router' {
       path: '/signup'
       fullPath: '/signup'
       preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -122,6 +230,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tools/url-scanner': {
+      id: '/tools/url-scanner'
+      path: '/tools/url-scanner'
+      fullPath: '/tools/url-scanner'
+      preLoaderRoute: typeof ToolsUrlScannerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/password-strength': {
+      id: '/tools/password-strength'
+      path: '/tools/password-strength'
+      fullPath: '/tools/password-strength'
+      preLoaderRoute: typeof ToolsPasswordStrengthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/password-generator': {
+      id: '/tools/password-generator'
+      path: '/tools/password-generator'
+      fullPath: '/tools/password-generator'
+      preLoaderRoute: typeof ToolsPasswordGeneratorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/ip-lookup': {
+      id: '/tools/ip-lookup'
+      path: '/tools/ip-lookup'
+      fullPath: '/tools/ip-lookup'
+      preLoaderRoute: typeof ToolsIpLookupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/fingerprint': {
+      id: '/tools/fingerprint'
+      path: '/tools/fingerprint'
+      fullPath: '/tools/fingerprint'
+      preLoaderRoute: typeof ToolsFingerprintRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/breach-checker': {
+      id: '/tools/breach-checker'
+      path: '/tools/breach-checker'
+      fullPath: '/tools/breach-checker'
+      preLoaderRoute: typeof ToolsBreachCheckerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -130,7 +280,14 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   SignupRoute: SignupRoute,
+  ToolsBreachCheckerRoute: ToolsBreachCheckerRoute,
+  ToolsFingerprintRoute: ToolsFingerprintRoute,
+  ToolsIpLookupRoute: ToolsIpLookupRoute,
+  ToolsPasswordGeneratorRoute: ToolsPasswordGeneratorRoute,
+  ToolsPasswordStrengthRoute: ToolsPasswordStrengthRoute,
+  ToolsUrlScannerRoute: ToolsUrlScannerRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
