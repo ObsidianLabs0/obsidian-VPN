@@ -4,16 +4,16 @@ import { useAuth } from "@/context/AuthContext";
 import { Shield } from "lucide-react";
 
 /**
- * Wraps pages that require authentication.
- * Redirects unauthenticated users to /login, preserving the intended destination.
+ * Wraps pages that should only be visible to unauthenticated users
+ * (landing, login, signup). Redirects logged-in users to /dashboard.
  */
-export function ProtectedRoute({ children }: { children: React.ReactNode }) {
+export function GuestRoute({ children }: { children: React.ReactNode }) {
   const { session, loading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!loading && !session) {
-      navigate({ to: "/login", replace: true });
+    if (!loading && session) {
+      navigate({ to: "/dashboard", replace: true });
     }
   }, [session, loading, navigate]);
 
@@ -29,7 +29,7 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
     );
   }
 
-  if (!session) return null;
+  if (session) return null;
 
   return <>{children}</>;
 }

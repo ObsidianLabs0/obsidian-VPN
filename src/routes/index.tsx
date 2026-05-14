@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Check, Shield, Zap, Lock, Globe, Eye, Fingerprint, Activity, Star } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { GuestRoute } from "@/components/GuestRoute";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -12,8 +13,16 @@ export const Route = createFileRoute("/")({
       { property: "og:description", content: "Next-gen cybersecurity tools and privacy suite." },
     ],
   }),
-  component: Landing,
+  component: LandingWrapper,
 });
+
+function LandingWrapper() {
+  return (
+    <GuestRoute>
+      <Landing />
+    </GuestRoute>
+  );
+}
 
 const features = [
   { icon: Shield, title: "URL Scanner", desc: "Detect malicious links before you click." },

@@ -1,8 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Shield, Eye, EyeOff, LogIn, AlertCircle } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { useAuth } from "@/context/AuthContext";
+import { GuestRoute } from "@/components/GuestRoute";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -11,23 +11,24 @@ export const Route = createFileRoute("/login")({
       { name: "description", content: "Sign in to your Obsidian VPN account." },
     ],
   }),
-  component: LoginPage,
+  component: LoginPageWrapper,
 });
+
+function LoginPageWrapper() {
+  return (
+    <GuestRoute>
+      <LoginPage />
+    </GuestRoute>
+  );
+}
 
 function LoginPage() {
   const navigate = useNavigate();
-  const { session, loading } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
-
-  useEffect(() => {
-    if (!loading && session) {
-      navigate({ to: "/dashboard" });
-    }
-  }, [session, loading, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,11 +41,12 @@ function LoginPage() {
       setError(error.message);
       setSubmitting(false);
     } else {
-      navigate({ to: "/dashboard" });
+      // onAuthStateChange fires SIGNED_IN → AuthContext updates session →
+      // GuestRoute detects session and redirects. We also navigate immediately
+      // for a snappier feel.
+      navigate({ to: "/dashboard", replace: true });
     }
   };
-
-  if (loading) return <AuthLoader />;
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden">
@@ -96,10 +98,7 @@ function LoginPage() {
                 <label htmlFor="password" className="text-xs font-mono text-muted-foreground uppercase tracking-wider">
                   Password
                 </label>
-                <Link
-                  to="/forgot-password"
-                  className="text-xs text-primary hover:underline"
-                >
+                <Link to="/forgot-password" className="text-xs text-primary hover:underline">
                   Forgot password?
                 </Link>
               </div>
@@ -147,14 +146,6 @@ function LoginPage() {
           </p>
         </div>
       </div>
-    </div>
-  );
-}
-
-function AuthLoader() {
-  return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="h-8 w-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
     </div>
   );
 }

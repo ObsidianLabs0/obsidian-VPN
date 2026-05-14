@@ -1,8 +1,8 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 import { Shield, Eye, EyeOff, UserPlus, AlertCircle, CheckCircle2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { useAuth } from "@/context/AuthContext";
+import { GuestRoute } from "@/components/GuestRoute";
 
 export const Route = createFileRoute("/signup")({
   head: () => ({
@@ -11,12 +11,18 @@ export const Route = createFileRoute("/signup")({
       { name: "description", content: "Create your Obsidian VPN account." },
     ],
   }),
-  component: SignupPage,
+  component: SignupPageWrapper,
 });
 
+function SignupPageWrapper() {
+  return (
+    <GuestRoute>
+      <SignupPage />
+    </GuestRoute>
+  );
+}
+
 function SignupPage() {
-  const navigate = useNavigate();
-  const { session, loading } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -25,12 +31,6 @@ function SignupPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-
-  useEffect(() => {
-    if (!loading && session) {
-      navigate({ to: "/dashboard" });
-    }
-  }, [session, loading, navigate]);
 
   const passwordStrength = (): { label: string; color: string; width: string } => {
     if (password.length === 0) return { label: "", color: "", width: "0%" };
@@ -68,8 +68,6 @@ function SignupPage() {
     }
   };
 
-  if (loading) return <AuthLoader />;
-
   if (success) {
     return (
       <div className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden">
@@ -81,8 +79,12 @@ function SignupPage() {
               <CheckCircle2 className="h-8 w-8 text-primary" />
             </div>
             <h2 className="text-xl font-semibold mb-2">Check your email</h2>
-            <p className="text-sm text-muted-foreground mb-6">
-              We sent a confirmation link to <span className="text-foreground font-medium">{email}</span>. Click it to activate your account.
+            <p className="text-sm text-muted-foreground mb-2">
+              We sent a confirmation link to{" "}
+              <span className="text-foreground font-medium">{email}</span>.
+            </p>
+            <p className="text-xs text-muted-foreground mb-6">
+              After clicking the link, you'll be signed in and taken to your dashboard automatically.
             </p>
             <Link
               to="/login"
@@ -233,14 +235,6 @@ function SignupPage() {
           </p>
         </div>
       </div>
-    </div>
-  );
-}
-
-function AuthLoader() {
-  return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="h-8 w-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
     </div>
   );
 }
