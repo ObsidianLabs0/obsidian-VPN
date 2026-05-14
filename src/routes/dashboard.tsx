@@ -1,10 +1,12 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import {
   Shield, LayoutDashboard, Wrench, Activity, Settings, LogOut, Crown,
   Search, Lock, Key, Mail, Globe, Fingerprint, ArrowUpRight, Zap,
   TrendingUp, AlertTriangle, CheckCircle2, User
 } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
@@ -13,7 +15,7 @@ export const Route = createFileRoute("/dashboard")({
       { name: "description", content: "Your Obsidian VPN security command center." },
     ],
   }),
-  component: Dashboard,
+  component: DashboardWrapper,
 });
 
 const tools = [
@@ -39,8 +41,28 @@ const navItems = [
   { icon: Settings, label: "Settings" },
 ];
 
+function DashboardWrapper() {
+  return (
+    <ProtectedRoute>
+      <Dashboard />
+    </ProtectedRoute>
+  );
+}
+
 function Dashboard() {
   const [selectedTool, setSelectedTool] = useState<string | null>(null);
+  const [signingOut, setSigningOut] = useState(false);
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const displayName = user?.email?.split("@")[0] ?? "operator";
+  const initials = displayName.slice(0, 2).toUpperCase();
+
+  const handleSignOut = async () => {
+    setSigningOut(true);
+    await signOut();
+    navigate({ to: "/" });
+  };
 
   return (
     <div className="min-h-screen flex bg-background">
@@ -78,33 +100,62 @@ function Dashboard() {
           </button>
         </div>
 
-        <button className="mt-4 flex items-center gap-3 px-3 py-2 text-sm text-muted-foreground hover:text-foreground transition">
-          <LogOut className="h-4 w-4" /> Sign out
+        <button
+          onClick={handleSignOut}
+          disabled={signingOut}
+          className="mt-4 flex items-center gap-3 px-3 py-2 text-sm text-muted-foreground hover:text-foreground transition disabled:opacity-50"
+        >
+          {signingOut
+            ? <span className="h-4 w-4 border-2 border-muted-foreground/30 border-t-muted-foreground rounded-full animate-spin" />
+            : <LogOut className="h-4 w-4" />
+          }
+          {signingOut ? "Signing out…" : "Sign out"}
         </button>
       </aside>
 
       {/* Main */}
       <main className="flex-1 min-w-0">
         {/* Topbar */}
-        <header className="border-b border-border/40 px-6 py-4 flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-semibold">Welcome back, operator</h1>
-            <p className="text-xs text-muted-foreground font-mono">Last sync: just now</p>
+        <header className="border-b border-border/40 px-4 sm:px-6 py-4 flex items-center justify-between">
+          {/* Mobile logo */}
+          <div className="flex items-center gap-3 lg:hidden">
+            <Shield className="h-5 w-5 text-primary" />
+            <span className="font-display font-semibold text-sm">Obsidian<span className="text-primary">VPN</span></span>
           </div>
+
+          <div className="hidden lg:block">
+            <h1 className="text-xl font-semibold">Welcome back, {displayName}</h1>
+            <p className="text-xs text-muted-foreground font-mono">{user?.email}</p>
+          </div>
+
           <div className="flex items-center gap-3">
             <button className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition">
               <Crown className="h-4 w-4" /> Upgrade plan
             </button>
-            <button className="flex items-center gap-2 px-3 py-2 rounded-lg glass">
+            <div className="flex items-center gap-2 px-3 py-2 rounded-lg glass">
               <div className="h-7 w-7 rounded-full bg-primary/20 border border-primary/40 flex items-center justify-center">
-                <User className="h-4 w-4 text-primary" />
+                <span className="text-xs font-bold text-primary">{initials}</span>
               </div>
-              <span className="hidden sm:inline text-sm">Alex</span>
+              <span className="hidden sm:inline text-sm">{displayName}</span>
+            </div>
+            {/* Mobile sign out */}
+            <button
+              onClick={handleSignOut}
+              disabled={signingOut}
+              className="lg:hidden flex items-center gap-1 px-3 py-2 rounded-lg glass text-muted-foreground hover:text-foreground transition text-sm disabled:opacity-50"
+            >
+              <LogOut className="h-4 w-4" />
             </button>
           </div>
         </header>
 
-        <div className="p-6 grid gap-6 lg:grid-cols-3">
+        {/* Mobile user greeting */}
+        <div className="lg:hidden px-4 pt-4 pb-0">
+          <h1 className="text-lg font-semibold">Welcome back, {displayName}</h1>
+          <p className="text-xs text-muted-foreground font-mono">{user?.email}</p>
+        </div>
+
+        <div className="p-4 sm:p-6 grid gap-6 lg:grid-cols-3">
           {/* Security score */}
           <div className="glass p-6 lg:col-span-2 relative overflow-hidden">
             <div className="absolute -top-20 -right-20 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
