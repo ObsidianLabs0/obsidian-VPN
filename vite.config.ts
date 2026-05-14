@@ -1,6 +1,7 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
+// Vercel deployment: disable Cloudflare Workers plugin and let TanStack Start
+// produce a standard Node-compatible SSR build that Vercel can serve.
 export default defineConfig({
-  plugins: [react()],
-})
+  cloudflare: false,
+});
