@@ -1,11 +1,12 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "npm run build",
+  "installCommand": "npm install",
   "outputDirectory": "dist/client",
-  "framework": null,
+  "framework": "vite",
   "functions": {
     "api/server.ts": {
-      "runtime": "nodejs20.x",
+      "runtime": "@vercel/node@3.2.0",
       "includeFiles": "dist/server/**"
     }
   },
