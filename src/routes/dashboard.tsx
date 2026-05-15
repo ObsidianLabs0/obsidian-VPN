@@ -114,7 +114,7 @@ function Dashboard() {
   };
 
   const isPositiveResult = (item: HistoryItem): boolean => {
-    const r = item.result;
+    const r = (item.result ?? {}) as Record<string, unknown>;
     if (item.tool === "url") return r.safe === true;
     if (item.tool === "breach") return r.breached === false;
     if (item.tool === "pwd-check") return typeof r.score === "number" && (r.score as number) >= 60;
@@ -123,21 +123,22 @@ function Dashboard() {
 
   const getActivityText = (item: HistoryItem): string => {
     const name = toolNameMap[item.tool] || item.tool;
-    const r = item.result;
-    if (item.tool === "url") return `${name} — ${item.input.slice(0, 35)} — ${r.safe ? "safe" : (r.risk as string) + " risk"}`;
+    const r = (item.result ?? {}) as Record<string, unknown>;
+    const input = item.input ?? "";
+    if (item.tool === "url") return `${name} — ${input.slice(0, 35)} — ${r.safe ? "safe" : (r.risk as string) + " risk"}`;
     if (item.tool === "breach") return `${name} — ${r.breached ? (r.breachCount as number) + " breaches found" : "no breaches"}`;
     if (item.tool === "pwd-check") return `${name} — ${r.label as string} (${r.score as number}/100)`;
-    if (item.tool === "pwd-gen") return `${name} — ${item.input}`;
-    if (item.tool === "ip") return `${name} — ${item.input === "my-ip" ? "own IP" : item.input} — ${r.country as string}`;
+    if (item.tool === "pwd-gen") return `${name} — ${input}`;
+    if (item.tool === "ip") return `${name} — ${input === "my-ip" ? "own IP" : input} — ${r.country as string}`;
     if (item.tool === "fp") return `${name} — trackability ${r.uniquenessScore as number}/100`;
     return name;
   };
 
   const totalScans = history.length;
   const breachScans = history.filter((h) => h.tool === "breach");
-  const breachesFound = breachScans.filter((h) => h.result.breached === true).length;
+  const breachesFound = breachScans.filter((h) => (h.result as Record<string, unknown> | null)?.breached === true).length;
   const urlScans = history.filter((h) => h.tool === "url");
-  const threatsFound = urlScans.filter((h) => h.result.safe === false).length;
+  const threatsFound = urlScans.filter((h) => (h.result as Record<string, unknown> | null)?.safe === false).length;
 
   return (
     <div className="min-h-screen flex bg-background">
