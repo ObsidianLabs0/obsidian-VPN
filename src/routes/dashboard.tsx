@@ -56,8 +56,8 @@ const navItems = [
 type HistoryItem = {
   id: string;
   tool: string;
-  input: string;
-  result: Record<string, unknown>;
+  input: string | null;
+  result: unknown;
   created_at: string;
 };
 
