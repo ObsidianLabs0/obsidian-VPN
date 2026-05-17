@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import {
   Shield, LayoutDashboard, Wrench, Activity, Settings, LogOut, Crown,
   Search, Lock, Key, Mail, Globe, Fingerprint, ArrowUpRight, Zap,
@@ -81,10 +81,24 @@ function Dashboard() {
 
   useEffect(() => {
     if (!user) return;
-    loadHistory();
+    let cancelled = false;
+    (async () => {
+      setHistoryLoading(true);
+      const { data } = await supabase
+        .from("tool_history")
+        .select("id, tool, input, result, created_at")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(10);
+      if (!cancelled) {
+        setHistory(data ?? []);
+        setHistoryLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
   }, [user]);
 
-  const loadHistory = async () => {
+  const loadHistory = useCallback(async () => {
     if (!user) return;
     setHistoryLoading(true);
     const { data } = await supabase
@@ -95,13 +109,13 @@ function Dashboard() {
       .limit(10);
     setHistory(data ?? []);
     setHistoryLoading(false);
-  };
+  }, [user]);
 
-  const handleSignOut = async () => {
+  const handleSignOut = useCallback(async () => {
     setSigningOut(true);
     await signOut();
     navigate({ to: "/" });
-  };
+  }, [signOut, navigate]);
 
   const formatTime = (ts: string) => {
     const diff = Date.now() - new Date(ts).getTime();
@@ -134,11 +148,16 @@ function Dashboard() {
     return name;
   };
 
-  const totalScans = history.length;
-  const breachScans = history.filter((h) => h.tool === "breach");
-  const breachesFound = breachScans.filter((h) => (h.result as Record<string, unknown> | null)?.breached === true).length;
-  const urlScans = history.filter((h) => h.tool === "url");
-  const threatsFound = urlScans.filter((h) => (h.result as Record<string, unknown> | null)?.safe === false).length;
+  const { totalScans, breachesFound, threatsFound } = useMemo(() => {
+    let breaches = 0;
+    let threats = 0;
+    for (const h of history) {
+      const r = h.result as Record<string, unknown> | null;
+      if (h.tool === "breach" && r?.breached === true) breaches++;
+      if (h.tool === "url" && r?.safe === false) threats++;
+    }
+    return { totalScans: history.length, breachesFound: breaches, threatsFound: threats };
+  }, [history]);
 
   return (
     <div className="min-h-screen flex bg-background">
