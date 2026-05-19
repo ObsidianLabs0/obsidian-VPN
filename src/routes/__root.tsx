@@ -73,14 +73,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Obsidian VPN — Digital Privacy Reinvented" },
+      { title: "Obsidian VPN" },
       { name: "description", content: "Next-gen cybersecurity tools and privacy suite." },
       { name: "author", content: "Obsidian VPN" },
-      { property: "og:title", content: "Obsidian VPN — Digital Privacy Reinvented" },
+      { property: "og:title", content: "Obsidian VPN" },
       { property: "og:description", content: "Next-gen cybersecurity tools and privacy suite." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Obsidian VPN" },
+      { name: "twitter:description", content: "Next-gen cybersecurity tools and privacy suite." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8fda53af-957c-4292-a0c6-1252c69a3357/id-preview-e08d03bb--297b6efb-5227-4f4a-980d-0ae9709eb495.lovable.app-1779196208456.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8fda53af-957c-4292-a0c6-1252c69a3357/id-preview-e08d03bb--297b6efb-5227-4f4a-980d-0ae9709eb495.lovable.app-1779196208456.png" },
     ],
     links: [
       {
