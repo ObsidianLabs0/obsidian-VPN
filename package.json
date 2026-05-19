@@ -3,9 +3,6 @@
   "private": true,
   "sideEffects": false,
   "type": "module",
-  "engines": {
-    "node": ">=20.19.0 <21"
-  },
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
@@ -86,8 +83,5 @@
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.56.1",
     "vite": "^7.3.1"
-  },
-  "overrides": {
-    "rollup-plugin-visualizer": "6.0.3"
   }
 }
