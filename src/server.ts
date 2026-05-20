@@ -26,18 +26,16 @@ async function normalizeCatastrophicSsrResponse(response: Response): Promise<Res
   });
 }
 
-export default {
-  async fetch(request: Request) {
-    try {
-      const response = await startHandler({ request });
-      return await normalizeCatastrophicSsrResponse(response);
-    } catch (error) {
-      console.error(error);
+export default async function serverEntry({ request }: { request: Request }) {
+  try {
+    const response = await startHandler({ request });
+    return await normalizeCatastrophicSsrResponse(response);
+  } catch (error) {
+    console.error(error);
 
-      return new Response(renderErrorPage(), {
-        status: 500,
-        headers: { "content-type": "text/html; charset=utf-8" },
-      });
-    }
-  },
-};
+    return new Response(renderErrorPage(), {
+      status: 500,
+      headers: { "content-type": "text/html; charset=utf-8" },
+    });
+  }
+}
